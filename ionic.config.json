@@ -1,0 +1,7 @@
+{
+  "name": "esp-monitor",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "react"
+}
