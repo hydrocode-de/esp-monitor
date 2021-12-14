@@ -1,6 +1,8 @@
 import { IonButton, IonButtons, IonContent, IonHeader, IonItem, IonList, IonPage, IonTitle, IonToolbar } from '@ionic/react';
 import { useState } from 'react';
-import { registerSense } from '../sense';
+import  cloneDeep  from 'lodash.clonedeep';
+
+import { registerSense, developmentFakeSensor } from '../sense';
 
 
 const MonitorPage: React.FC = () => {
@@ -9,8 +11,8 @@ const MonitorPage: React.FC = () => {
 
   // callback function to store data
   const addRawData = (data: {[key: string]: any}) => {
-    const newLog = {...data, timestamp: new Date()};
-    setRawData([...rawData, newLog]);
+    const newLog = {...cloneDeep(data), timestamp: new Date()};
+    setRawData(old => [...old, newLog]);
   }
 
   // define a wrapper for the registration function
@@ -24,6 +26,7 @@ const MonitorPage: React.FC = () => {
         <IonToolbar>
           <IonTitle>ESP Monitor</IonTitle>
           <IonButtons slot="end">
+            <IonButton onClick={() => developmentFakeSensor(addRawData)}>FAKE SENSOR</IonButton>
             <IonButton onClick={callRegisterSense}>CONNECT</IonButton>
           </IonButtons>
         </IonToolbar>
@@ -32,7 +35,7 @@ const MonitorPage: React.FC = () => {
         <IonList>
           {rawData.map((log: {timestamp: Date, [key: string]: any}) => {
             return (
-              <IonItem>
+              <IonItem key={log.timestamp.toISOString()}>
                 <code>{JSON.stringify(log, undefined, 4)}</code>
               </IonItem>
             );

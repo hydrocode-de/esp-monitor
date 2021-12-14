@@ -21,6 +21,7 @@
     "@types/react-router": "^5.1.11",
     "@types/react-router-dom": "^5.1.7",
     "ionicons": "^5.4.0",
+    "lodash.clonedeep": "^4.5.0",
     "react": "^17.0.1",
     "react-dom": "^17.0.1",
     "react-router": "^5.2.0",
@@ -66,7 +67,9 @@
     ]
   },
   "devDependencies": {
-    "@capacitor/cli": "3.3.3"
+    "@capacitor/cli": "3.3.3",
+    "@types/lodash": "^4.14.178",
+    "@types/lodash.clonedeep": "^4.5.6"
   },
   "description": "An Ionic project"
 }

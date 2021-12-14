@@ -28,6 +28,7 @@ export const registerSense = async (callback: (data: any) => void): Promise<void
     );
 
   } catch (error) {
+    console.log(error)
     callback({error: error});
   }
 }
@@ -35,15 +36,25 @@ export const registerSense = async (callback: (data: any) => void): Promise<void
 const parseSenseData = (data: DataView): {[key: string]: any} => {
   // const flags = data.getUint8(0);
   // const rate16Bits = flags & 0x01;
-  let payload: {[key: string]: any} = {};
+  let payload: {[key: string]: any};
   
   // try to parse it
   try {
-    const payload = JSON.parse(dataViewToText(data));
+    payload = JSON.parse(dataViewToText(data));
   } catch (error) {
-    const payload = {error: error}
+    console.log(error);
+    payload = {error: error}
   }
 
   // return payload
   return payload;
+}
+
+export const developmentFakeSensor = (callback: (data: any) => void, interval: number = 5000): void => {
+  // make fake data and call callback function
+  const fakedata = {firmware: "1.0.0", "random": {value: Math.random() * 100}};
+  callback(fakedata);
+
+  // fire the interval
+  setTimeout(() => developmentFakeSensor(callback, interval), interval);
 }
