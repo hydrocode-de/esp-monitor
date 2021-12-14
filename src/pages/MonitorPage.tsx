@@ -1,11 +1,23 @@
-import { IonButton, IonButtons, IonContent, IonHeader, IonPage, IonTitle, IonToolbar } from '@ionic/react';
+import { IonButton, IonButtons, IonContent, IonHeader, IonItem, IonList, IonPage, IonTitle, IonToolbar } from '@ionic/react';
+import { useState } from 'react';
 import { registerSense } from '../sense';
 
-const callRegisterSense = () => {
-  registerSense();
-}
 
 const MonitorPage: React.FC = () => {
+  // define a state to hold the raw data
+  const [rawData, setRawData] = useState<any[]>([]);
+
+  // callback function to store data
+  const addRawData = (data: {[key: string]: any}) => {
+    const newLog = {...data, timestamp: new Date()};
+    setRawData([...rawData, newLog]);
+  }
+
+  // define a wrapper for the registration function
+  const callRegisterSense = () => {
+    registerSense(addRawData);
+  }
+  
   return (
     <IonPage>
       <IonHeader>
@@ -17,10 +29,15 @@ const MonitorPage: React.FC = () => {
         </IonToolbar>
       </IonHeader>
       <IonContent fullscreen>
-
-
-        <h1>Monitor Application</h1>
-
+        <IonList>
+          {rawData.map((log: {timestamp: Date, [key: string]: any}) => {
+            return (
+              <IonItem>
+                <code>{JSON.stringify(log, undefined, 4)}</code>
+              </IonItem>
+            );
+          })}
+        </IonList>
       </IonContent>
     </IonPage>
   );
