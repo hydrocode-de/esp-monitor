@@ -1,4 +1,4 @@
-import { BleClient, dataViewToText } from '@capacitor-community/bluetooth-le';
+import { BleClient, BleDevice, dataViewToText } from '@capacitor-community/bluetooth-le';
 
 const SERVICE =  '6e400001-b5a3-f393-e0a9-e50e24dcca9e';
 const SENSE_CHARACTERISTIC = '6e400002-b5a3-f393-e0a9-e50e24dcca9e';
@@ -30,6 +30,29 @@ export const registerSense = async (callback: (data: any) => void): Promise<void
   } catch (error) {
     console.log(error)
     callback({error: error});
+  }
+}
+
+export const connectSense = async (serviceUUID: string= SERVICE): Promise<BleDevice> => {
+  try {
+    // Start Bluetooth Device
+    await BleClient.initialize();
+
+    // Register for Bluetooth Device
+    const device = await BleClient.requestDevice({
+      services: [serviceUUID],
+    });
+
+    // connect the device
+    await BleClient.connect(device.deviceId);
+    console.log('connected to device', device);
+    
+    // resolve Promise
+    return Promise.resolve(device);
+    
+  } catch (error) {
+    console.log(error);
+    return Promise.reject(error);
   }
 }
 
