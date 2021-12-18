@@ -1,22 +1,31 @@
 import { IonButton, IonButtons, IonContent, IonHeader, IonItem, IonList, IonPage, IonTitle, IonToolbar } from '@ionic/react';
 import { useState } from 'react';
-import  cloneDeep  from 'lodash.clonedeep';
-
-import { connectSense, subscribeSense, disconnectSense, sendConfig, developmentFakeSensor } from '../sense';
 import { BleDevice } from '@capacitor-community/bluetooth-le';
+
+import { EspPayload } from '../Payload.model';
+import { add } from '../features/EspNode';
+import { useAppDispatch, useAppSelector } from '../hooks';
+import { connectSense, subscribeSense, disconnectSense, sendConfig, developmentFakeSensor } from '../sense';
+
 
 
 const MonitorPage: React.FC = () => {
+  // create a dispatcher
+  const dispatch = useAppDispatch();
+  // load the raw payloads from the store
+  const messages = useAppSelector(state => state.espMessages.messages);
+
   // define a state to hold the raw data
-  const [rawData, setRawData] = useState<any[]>([]);
+  //const [rawData, setRawData] = useState<any[]>([]);
   const [device, setDevice] = useState<BleDevice | undefined>(undefined);
   const [connected, setConnected] = useState<boolean>(false);
 
   // callback function to store data
-  const addRawData = (data: {[key: string]: any}) => {
-    const newLog = {...cloneDeep(data), timestamp: new Date()};
-    setRawData(old => [...old, newLog]);
-  }
+  // const addRawData = (data: {[key: string]: any}) => {
+  //   const newLog = {...cloneDeep(data), timestamp: new Date()};
+  //   setRawData(old => [...old, newLog]);
+  // }
+  const addRawData = (data: EspPayload) => dispatch(add(data));
 
   // define a wrapper for the registration function
   const callRegisterSense = () => {
@@ -61,13 +70,11 @@ const MonitorPage: React.FC = () => {
       </IonHeader>
       <IonContent fullscreen>
         <IonList>
-          {rawData.map((log: {timestamp: Date, [key: string]: any}) => {
-            return (
-              <IonItem key={log.timestamp.toISOString()}>
-                <code>{JSON.stringify(log, undefined, 4)}</code>
-              </IonItem>
-            );
-          })}
+          {messages.map(message => (
+            <IonItem key={message.timestamp}>
+              <pre><code>{JSON.stringify(message, undefined, 4)}</code></pre>
+            </IonItem>
+          ))}
         </IonList>
       </IonContent>
     </IonPage>
