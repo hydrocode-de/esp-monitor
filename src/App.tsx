@@ -8,6 +8,7 @@ import {
   IonTabButton,
   IonTabs,
 } from '@ionic/react';
+
 import { IonReactRouter } from '@ionic/react-router';
 import {  triangle } from 'ionicons/icons';
 import Monitor from './pages/MonitorPage';
