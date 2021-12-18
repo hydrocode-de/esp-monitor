@@ -1,37 +1,10 @@
-import { BleClient, BleDevice, dataViewToText } from '@capacitor-community/bluetooth-le';
+import { BleClient, BleDevice, dataViewToText, textToDataView } from '@capacitor-community/bluetooth-le';
 
 const SERVICE =  '6e400001-b5a3-f393-e0a9-e50e24dcca9e';
 const SENSE_CHARACTERISTIC = '6e400002-b5a3-f393-e0a9-e50e24dcca9e';
+const SENSE_WRITE = '6e400003-b5a3-f393-e0a9-e50e24dcca9e';
 // read: '6E400002-B5A3-F393-E0A9-E50E24DCCA9E'
 // write '6E400003-B5A3-F393-E0A9-E50E24DCCA9E'
-
-export const registerSense = async (callback: (data: any) => void): Promise<void> => {
-  try {
-    // Start Bluetooth Device
-    await BleClient.initialize();
-
-    // Register for Bluetooth Device
-    const device = await BleClient.requestDevice({
-      services: [SERVICE],
-    });
-
-    // connect the device
-    await BleClient.connect(device.deviceId);
-    console.log('connected to device', device);
-
-    // subscribe to notifications
-    await BleClient.startNotifications(
-      device.deviceId,
-      SERVICE,
-      SENSE_CHARACTERISTIC,
-      (data) => callback(parseSenseData(data))
-    );
-
-  } catch (error) {
-    console.log(error)
-    callback({error: error});
-  }
-}
 
 export const connectSense = async (serviceUUID: string= SERVICE): Promise<BleDevice> => {
   try {
@@ -50,6 +23,45 @@ export const connectSense = async (serviceUUID: string= SERVICE): Promise<BleDev
     // resolve Promise
     return Promise.resolve(device);
     
+  } catch (error) {
+    console.log(error);
+    return Promise.reject(error);
+  }
+}
+
+export const subscribeSense = async (device: BleDevice, senseCallback: (data: any) => void, configCallback: (data: any) => void): Promise<void> => {
+  try {
+    // subscribe to sense notifications
+    await BleClient.startNotifications(device.deviceId, SERVICE, SENSE_CHARACTERISTIC, (data) => {
+      const payload = parseSenseData(data);
+      if (Object.keys(payload).includes('config')) {
+        configCallback(payload.config);
+      } else {
+        senseCallback(payload);
+      }
+    });
+
+  } catch (error) {
+    return Promise.reject(error);
+  }
+}
+
+
+export const disconnectSense = async (device: BleDevice): Promise<void> => {
+  try {
+    await BleClient.stopNotifications(device.deviceId, SERVICE, SENSE_CHARACTERISTIC);
+    return Promise.resolve();
+  } catch (error) {
+    console.log(error);
+    return Promise.reject(error);
+  }
+}
+
+export const sendConfig = async (device: BleDevice, config: any): Promise<void> => {
+  const data = textToDataView(JSON.stringify(config));
+  try {
+    await BleClient.write(device.deviceId, SERVICE, SENSE_WRITE, data); 
+    return Promise.resolve();
   } catch (error) {
     console.log(error);
     return Promise.reject(error);
