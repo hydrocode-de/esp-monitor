@@ -1,33 +1,39 @@
-import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { EspPayload } from '../Payload.model';
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { EspConfig } from "../models";
+
 
 export interface EspNodeState {
-    messages: EspPayload[];
     deviceId?: string;
+    config?: EspConfig;
+    connected: boolean;
 }
 
-// define the initial internal state of the application
 const initialState: EspNodeState = {
-    messages: [],
+    connected: false
 }
 
-export const espMessageSlice = createSlice({
-    name: 'espMessage',
+export const espNodeSlice = createSlice({
+    name: 'espNode',
     initialState,
     reducers: {
-        // add a new EspPayload message to the stack
-        add: (state, action: PayloadAction<EspPayload>) => {
-            state.messages.push({...action.payload, timestamp: new Date().toISOString()});
+        setConfig: (state, action: PayloadAction<{[key: string]: any}>) => {
+            state.config = {...state.config!, ...action.payload};
         },
-
-        clear: (state) => {
-            state.messages = [];
+        connect: (state) => {
+            state.connected = true;
+        },
+        disconnect: (state) => {
+            state.connected = false;
+        },
+        setDeviceId: (state, action: PayloadAction<string>) => {
+            state.deviceId = action.payload;
         }
     }
 });
 
-// create a redux Action for each case of the reducer
-export const { add, clear } = espMessageSlice.actions;
 
-// export the reducer generated code
-export default espMessageSlice.reducer;
+// export the actions 
+export const { setConfig, connect, disconnect, setDeviceId } = espNodeSlice.actions;
+
+// export the reducer generated code as module default
+export default espNodeSlice.reducer;
