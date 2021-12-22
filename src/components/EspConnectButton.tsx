@@ -22,6 +22,7 @@ const EspConnectButton: React.FC = () => {
     const startSense = () => {
         connectSense().then(device => {
             subscribeSense(device, data => dispatch(add(data)), config => dispatch(setConfig(config)))
+            //subscribeSense(device, data => dispatch(add(data)), config => console.log(config))
             .then(() => {
                 // we are subscribed -> store device and status to store
                 dispatch(connect());

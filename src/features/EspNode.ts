@@ -16,14 +16,15 @@ export const espNodeSlice = createSlice({
     name: 'espNode',
     initialState,
     reducers: {
-        setConfig: (state, action: PayloadAction<{[key: string]: any}>) => {
-            state.config = {...state.config!, ...action.payload};
+        setConfig: (state, action: PayloadAction<EspConfig>) => {
+            state.config = action.payload;
         },
         connect: (state) => {
             state.connected = true;
         },
         disconnect: (state) => {
             state.connected = false;
+            state.deviceId = undefined;
         },
         setDeviceId: (state, action: PayloadAction<string>) => {
             state.deviceId = action.payload;

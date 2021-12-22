@@ -2,6 +2,7 @@ import { IonButtons, IonContent, IonHeader, IonItem, IonList, IonPage, IonTitle,
 
 import { useAppSelector } from '../hooks';
 import EspConnectButton from '../components/EspConnectButton';
+import EspRefreshConfigButton from '../components/EspRefreshConfigButton';
 
 
 
@@ -16,6 +17,7 @@ const MonitorPage: React.FC = () => {
           <IonTitle>ESP Monitor</IonTitle>
           <IonButtons slot="end">
             <EspConnectButton />
+            <EspRefreshConfigButton />
           </IonButtons>
         </IonToolbar>
       </IonHeader>

@@ -1,5 +1,5 @@
 import { BleClient, BleDevice, dataViewToText, textToDataView } from '@capacitor-community/bluetooth-le';
-import { EspPayload } from './models';
+import { EspConfig, EspPayload } from './models';
 
 const SERVICE =  '6e400001-b5a3-f393-e0a9-e50e24dcca9e';
 const SENSE_CHARACTERISTIC = '6e400002-b5a3-f393-e0a9-e50e24dcca9e';
@@ -30,13 +30,13 @@ export const connectSense = async (serviceUUID: string= SERVICE): Promise<BleDev
   }
 }
 
-export const subscribeSense = async (device: BleDevice, senseCallback: (data: {[key: string]: any}) => void, configCallback: (data: {[key: string]: any}) => void): Promise<void> => {
+export const subscribeSense = async (device: BleDevice, senseCallback: (data: {[key: string]: any}) => void, configCallback: (data: EspConfig) => void): Promise<void> => {
   try {
     // subscribe to sense notifications
     await BleClient.startNotifications(device.deviceId, SERVICE, SENSE_CHARACTERISTIC, (data) => {
       const payload = parseSenseData(data);
       if (Object.keys(payload).includes('config')) {
-        configCallback(payload.config);
+        configCallback(JSON.parse(payload.config));
       } else {
         senseCallback(payload);
       }
@@ -58,10 +58,10 @@ export const disconnectSense = async (deviceId: string): Promise<void> => {
   }
 }
 
-export const sendConfig = async (device: BleDevice, config: any): Promise<void> => {
+export const sendConfig = async (deviceId: string, config: {config: {[key: string]: any} | string}): Promise<void> => {
   const data = textToDataView(JSON.stringify(config));
   try {
-    await BleClient.write(device.deviceId, SERVICE, SENSE_WRITE, data); 
+    await BleClient.write(deviceId, SERVICE, SENSE_WRITE, data); 
     return Promise.resolve();
   } catch (error) {
     console.log(error);
