@@ -10,8 +10,11 @@ import {
 } from '@ionic/react';
 
 import { IonReactRouter } from '@ionic/react-router';
-import {  triangle } from 'ionicons/icons';
-import Monitor from './pages/MonitorPage';
+import {  constructOutline, pieChartOutline } from 'ionicons/icons';
+
+// load pages
+import MonitorPage from './pages/MonitorPage';
+import ConfigPage from './pages/ConfigPage/ConfigPage';
 
 /* Core CSS required for Ionic components to work properly */
 import '@ionic/react/css/core.css';
@@ -37,8 +40,11 @@ const App: React.FC = () => (
     <IonReactRouter>
       <IonTabs>
         <IonRouterOutlet>
-          <Route exact path="/monitor">
-            <Monitor />
+          <Route path="/monitor">
+            <MonitorPage />
+          </Route>
+          <Route  path="/config">
+            <ConfigPage />
           </Route>
           <Route exact path="/">
             <Redirect to="/monitor" />
@@ -46,8 +52,12 @@ const App: React.FC = () => (
         </IonRouterOutlet>
         <IonTabBar slot="bottom">
           <IonTabButton tab="tab1" href="/monitor">
-            <IonIcon icon={triangle} />
+            <IonIcon icon={pieChartOutline} />
             <IonLabel>Monitor</IonLabel>
+          </IonTabButton>
+          <IonTabButton tab="tab2" href="/config">
+            <IonIcon icon={constructOutline} />
+            <IonLabel>Configuration</IonLabel>
           </IonTabButton>
         </IonTabBar>
       </IonTabs>
