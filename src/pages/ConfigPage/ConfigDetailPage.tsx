@@ -1,5 +1,6 @@
 import { IonList, IonListHeader, IonItem, IonLabel, IonInput, IonPage, IonContent, IonHeader, IonToolbar, IonTitle, IonButtons } from '@ionic/react';
-import { useParams } from 'react-router';
+import EspConnectButton from '../../components/EspConnectButton';
+
 import EspRefreshConfigButton from '../../components/EspRefreshConfigButton';
 import { EspConfig } from '../../models';
 
@@ -15,6 +16,7 @@ const ConfigDetailPage: React.FC<ConfigDetailPageProps> = ({ config }) => {
                 <IonToolbar>
                     <IonTitle>{config.ble_name} configuration</IonTitle>
                     <IonButtons slot="end">
+                        <EspConnectButton useIcon='only' />
                         <EspRefreshConfigButton />
                     </IonButtons>
                 </IonToolbar>

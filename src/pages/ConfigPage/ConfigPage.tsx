@@ -32,7 +32,7 @@ const NoDevicePage: React.FC<{connected: boolean}> = ({connected}) => {
                 <IonToolbar>
                     <IonTitle>Device configuration</IonTitle>
                     <IonButtons slot="end">
-                        <EspConnectButton />
+                        <EspConnectButton useIcon="only"/>
                         {connected ? <EspRefreshConfigButton /> : null}
                     </IonButtons>
                 </IonToolbar>
@@ -60,15 +60,17 @@ const NoDevicePage: React.FC<{connected: boolean}> = ({connected}) => {
 
 const ConfigPage: React.FC = () => {
     // load the deviceId to see if a device is connected
-    //const connected = useAppSelector(state => !!state.esp.deviceId)
-    const connected = true;
+    const connected = useAppSelector(state => !!state.esp.deviceId)
+    // const connected = true;
 
     // load the config
-    //const config = useAppSelector(state => state.esp.config);
-    const config = DEV;
+    const config = useAppSelector(state => state.esp.config);
+    // const config = DEV;
 
     if (!connected || !config) {
-        return <NoDevicePage connected={connected} />
+        return (
+            <NoDevicePage connected={connected} />
+        )
     }
     return (
         <IonRouterOutlet>

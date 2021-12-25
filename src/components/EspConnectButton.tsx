@@ -1,11 +1,15 @@
-import { IonButton } from "@ionic/react";
+import { IonButton, IonIcon, IonLabel } from "@ionic/react";
+import { bluetooth } from 'ionicons/icons';
 
 import { useAppSelector, useAppDispatch } from "../hooks";
 import { connect, disconnect, setConfig, setDeviceId } from "../features/EspNode";
 import { add } from "../features/EspMessages";
 import { connectSense, subscribeSense, disconnectSense } from "../sense";
 
-const EspConnectButton: React.FC = () => {
+interface EspConnectButtonProps {
+    useIcon?: "none" | "both" | "only";
+}
+const EspConnectButton: React.FC<EspConnectButtonProps> = ({useIcon= "both"}) => {
     // create a dispatcher
     const dispatch = useAppDispatch();
 
@@ -32,10 +36,21 @@ const EspConnectButton: React.FC = () => {
     }
 
     if (connected) {
-        return <IonButton onClick={stopSense}>DISCONNECT</IonButton>
+        return (
+            <IonButton onClick={stopSense} color={useIcon === 'only' ? 'primary': 'default'}>
+                    { ['both', 'only'].includes(useIcon) ? <IonIcon slot={useIcon==="only" ? "icon-only" : "start"} icon={bluetooth} /> : null }
+                    { ['none', 'both'].includes(useIcon) ?  <IonLabel>DISCONNECT</IonLabel> : null }
+            </IonButton>
+        )
     } else {
-        return <IonButton onClick={startSense}>CONNECT</IonButton>
+        return (
+            <IonButton onClick={startSense} color={useIcon === 'only' ? 'danger': 'default'}>
+                { ['both', 'only'].includes(useIcon) ? <IonIcon slot={useIcon==="only" ? "icon-only" : "start"} icon={bluetooth} /> : null }
+                { ['none', 'both'].includes(useIcon) ?  <IonLabel>CONNECT</IonLabel> : null }
+            </IonButton>
+        )
     }
 }
+EspConnectButton.defaultProps = {useIcon: 'both'}
 
 export default EspConnectButton;

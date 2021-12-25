@@ -16,8 +16,7 @@ const MonitorPage: React.FC = () => {
         <IonToolbar>
           <IonTitle>ESP Monitor</IonTitle>
           <IonButtons slot="end">
-            <EspConnectButton />
-            <EspRefreshConfigButton />
+            <EspConnectButton useIcon="both" />
           </IonButtons>
         </IonToolbar>
       </IonHeader>
